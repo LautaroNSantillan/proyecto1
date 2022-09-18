@@ -34,10 +34,10 @@ class Sprite {
         c.fillRect(this.position.x, this.position.y, this.width, this.height)
 
         // ATTACK BOX
-        //if(this.isAttacking){
+        if(this.isAttacking){
         c.fillStyle = 'green'
         c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
-   // }
+    }
  }
 
     update() {
@@ -175,7 +175,7 @@ function animate() {
 animate()
 
 window.addEventListener('keydown', (event) => {
-    console.log(event.key);
+    
     switch (event.key) {
         case 'd':
             keys.d.pressed = true
@@ -212,7 +212,7 @@ window.addEventListener('keydown', (event) => {
             break
 
     }
-    console.log(event.key);
+    
 })
 
 window.addEventListener('keyup', (event) => {
@@ -233,5 +233,5 @@ window.addEventListener('keyup', (event) => {
             break
 
     }
-    console.log(event.key);
+    
 })
