@@ -35,11 +35,11 @@ class Sprite {
         c.fillRect(this.position.x, this.position.y, this.width, this.height)
 
         // ATTACK BOX
-        if(this.isAttacking){
-        c.fillStyle = 'green'
-        c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
+        if (this.isAttacking) {
+            c.fillStyle = 'green'
+            c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
+        }
     }
- }
 
     update() {
         this.draw()
@@ -53,14 +53,14 @@ class Sprite {
             this.velocity.y = 0
         } else this.velocity.y += gravity
 
-    
+
     }
-    attack(){ 
-    this.isAttacking = true
-    setTimeout(() => {
-        this.isAttacking = false
-    }, 100);
-     }
+    attack() {
+        this.isAttacking = true
+        setTimeout(() => {
+            this.isAttacking = false
+        }, 100);
+    }
 
 }
 
@@ -74,8 +74,8 @@ const player = new Sprite({
         y: 0
     },
     offset: {
-        x:0,
-        y:0
+        x: 0,
+        y: 0
     }
 })
 
@@ -92,8 +92,8 @@ const enemy = new Sprite({
     },
     color: 'blue',
     offset: {
-        x:-50,
-        y:0
+        x: -50,
+        y: 0
     }
 })
 
@@ -120,14 +120,47 @@ const keys = {
 
 }
 
-function ColisionRectangular({rectangle1, rectangle2}){
-    return(
-        rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x && 
+function ColisionRectangular({ rectangle1, rectangle2 }) {
+    return (
+        rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x &&
         rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width &&
         rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y &&
         rectangle1.position.y <= rectangle2.position.y + rectangle2.height
     )
 }
+
+
+function determineWinner({ player, enemy, timerId }) {
+    clearTimeout(timerId)
+    document.querySelector('#displayText').style.display = 'flex'
+    if (player.health === enemy.health) {
+        document.querySelector('#displayText').innerHTML = 'TIE'
+
+    } else if (player.health > enemy.health) {
+        document.querySelector('#displayText').innerHTML = 'PLAYER 1 WINS'
+
+    } else if (enemy.health > player.health) {
+        document.querySelector('#displayText').innerHTML = 'PLAYER 2 WINS'
+    }
+}
+
+// TIMER
+let timer = 60
+let timerId
+function decreaseTimer() {
+    if (timer > 0) {
+        timerId = setTimeout(decreaseTimer, 1000)
+        timer--
+        document.querySelector('#timer').innerHTML = timer
+    }
+
+    if (timer === 0) {
+        determineWinner(({ player, enemy, timerId }))
+    }
+
+}
+
+decreaseTimer()
 
 function animate() {
     window.requestAnimationFrame(animate)
@@ -158,28 +191,33 @@ function animate() {
         rectangle1: player,
         rectangle2: enemy
     }) &&
-        player.isAttacking){
-            player.isAttacking = false
-            enemy.health -= 20
-       document.querySelector('#enemyHealth').style.width = enemy.health + '%'
+        player.isAttacking) {
+        player.isAttacking = false
+        enemy.health -= 20
+        document.querySelector('#enemyHealth').style.width = enemy.health + '%'
     }
 
     if (ColisionRectangular({
         rectangle1: enemy,
         rectangle2: player
     }) &&
-        enemy.isAttacking){
-            enemy.isAttacking = false
-            player.health -= 20
-       document.querySelector('#playerHealth').style.width = player.health + '%'
-       console.log('enemy hit') 
+        enemy.isAttacking) {
+        enemy.isAttacking = false
+        player.health -= 20
+        document.querySelector('#playerHealth').style.width = player.health + '%'
+        console.log('enemy hit')
+    }
+
+    // TERMINAR EL JUEGO BASADO EN VIDA
+    if (enemy.health <= 0 || player.health <= 0) {
+        determineWinner({ player, enemy, timerId })
     }
 }
 
 animate()
 
 window.addEventListener('keydown', (event) => {
-    
+
     switch (event.key) {
         case 'd':
             keys.d.pressed = true
@@ -193,9 +231,9 @@ window.addEventListener('keydown', (event) => {
         case 'w':
             player.velocity.y = -20
             break
-            case ' ':
-                player.attack()
-                break
+        case ' ':
+            player.attack()
+            break
 
         //enemy
         case 'ArrowRight':
@@ -211,12 +249,12 @@ window.addEventListener('keydown', (event) => {
             enemy.velocity.y = -20
             break
 
-            case 'ArrowDown':
+        case 'ArrowDown':
             enemy.isAttacking = true
             break
 
     }
-    
+
 })
 
 window.addEventListener('keyup', (event) => {
@@ -237,5 +275,5 @@ window.addEventListener('keyup', (event) => {
             break
 
     }
-    
+
 })
