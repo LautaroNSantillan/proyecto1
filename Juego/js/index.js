@@ -62,6 +62,14 @@ const player = new Fighter({
             imageSrc: 'assets/jugador/Jump.png',
             framesMax: 2
             
+        },
+        fall: {
+            imageSrc: 'assets/jugador/Fall.png',
+            framesMax: 2
+        },
+        attack1: {
+            imageSrc: 'assets/jugador/Attack1.png',
+            framesMax: 4
         }
     }   
 })
@@ -126,13 +134,21 @@ function animate() {
     enemy.velocity.x = 0
 
     //player MOVEMENT
-    player.image = player.sprites.idle.image
+    
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -5
-        player.image = player.sprites.run.image
+        player.switchSprite('run')
     } else if (keys.d.pressed && player.lastKey === 'd') {
         player.velocity.x = 5
-        player.image = player.sprites.run.image
+        player.switchSprite('run')
+    } else {
+        player.switchSprite('idle')
+    }
+
+    if (player.velocity.y < 0 ){
+        player.switchSprite('jump')
+    }else if(player.velocity.y > 0){
+        player.switchSprite('fall')
     }
 
     //enemy MOVEMENT
@@ -142,10 +158,7 @@ function animate() {
         enemy.velocity.x = 5
     }
 
-    if (player.velocity.y < 0 ){
-        player.image = player.sprites.jump.image
-        player.framesMax = player.sprites.jump.framesMax
-    }
+    
 
     // DETECTAR COLISION
     if (ColisionRectangular({
