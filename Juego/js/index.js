@@ -44,10 +44,26 @@ const player = new Fighter({
     imageSrc: 'assets/jugador/Idle.png',
     framesMax: 8,
     scale: 2.5,
-    offset :{
+    offset: {
         x: 150,
         y: 120
-    }
+    },
+    sprites: {
+        idle: {
+            imageSrc: 'assets/jugador/Idle.png',
+            framesMax: 8,
+        },
+        run: {
+            imageSrc: 'assets/jugador/Run.png',
+            framesMax: 8
+            
+        },
+        jump: {
+            imageSrc: 'assets/jugador/Jump.png',
+            framesMax: 2
+            
+        }
+    }   
 })
 
 
@@ -99,21 +115,24 @@ function animate() {
     window.requestAnimationFrame(animate)
     c.fillStyle = 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
-   background.update()
+    background.update()
 
-   shop.update()
+    shop.update()
 
     player.update()
-    enemy.update()
+    //enemy.update()
 
     player.velocity.x = 0
     enemy.velocity.x = 0
 
     //player MOVEMENT
+    player.image = player.sprites.idle.image
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -5
+        player.image = player.sprites.run.image
     } else if (keys.d.pressed && player.lastKey === 'd') {
         player.velocity.x = 5
+        player.image = player.sprites.run.image
     }
 
     //enemy MOVEMENT
@@ -121,6 +140,11 @@ function animate() {
         enemy.velocity.x = -5
     } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
         enemy.velocity.x = 5
+    }
+
+    if (player.velocity.y < 0 ){
+        player.image = player.sprites.jump.image
+        player.framesMax = player.sprites.jump.framesMax
     }
 
     // DETECTAR COLISION
@@ -187,7 +211,7 @@ window.addEventListener('keydown', (event) => {
             break
 
         case 'ArrowDown':
-            enemy.attack() 
+            enemy.attack()
             break
 
     }

@@ -50,7 +50,12 @@ class Sprite {
 
 class Fighter extends Sprite{
     constructor({ position, velocity, color = 'red', 
-    imageSrc, scale = 1, framesMax = 1, offset = {x: 0, y: 0}}) {
+    imageSrc, 
+    scale = 1, 
+    framesMax = 1, 
+    offset = {x: 0, y: 0},
+    sprites
+}) {
         super({
             position,
             imageSrc,
@@ -81,6 +86,13 @@ class Fighter extends Sprite{
         this.framesCurrent = 0
         this.framesElapsed = 0
         this.framesHold = 9
+        this.sprites = sprites
+
+        for (const sprite in this.sprites){
+            sprites[sprite].image = new Image()
+            sprites[sprite].image.src =  sprites[sprite].imageSrc
+        }
+        
     }
 
     
@@ -88,7 +100,7 @@ class Fighter extends Sprite{
     update() {
         this.draw()
         this.animateFrames()
-        
+
         this.attackBox.position.x = this.position.x + this.attackBox.offset.x
         this.attackBox.position.y = this.position.y
 
@@ -108,4 +120,16 @@ class Fighter extends Sprite{
         }, 100);
     }
 
+    switchSprite(sprite){
+switch (sprite){
+    case 'idle':
+    break;
+    case 'run':
+    break;
+    case 'jump':
+    break;
 }
+    }
+
+}
+
