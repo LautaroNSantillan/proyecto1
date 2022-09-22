@@ -71,7 +71,16 @@ const player = new Fighter({
             imageSrc: 'assets/jugador/Attack1.png',
             framesMax: 4
         }
-    }   
+    },
+    attackBox: {
+        offset:{
+            x: 59,
+            y:50,
+        },
+        width: 110,
+        height: 50
+    }
+
 })
 
 
@@ -89,7 +98,46 @@ const enemy = new Fighter({
     offset: {
         x: -50,
         y: 0
-    }
+    },
+    imageSrc: 'assets/enemigo/Idle.png',
+    framesMax: 4,
+    scale: 2.5,
+    offset: {
+        x: 150,
+        y: 174
+    },
+    sprites: {
+        idle: {
+            imageSrc: 'assets/enemigo/Idle.png',
+            framesMax: 4,
+        },
+        run: {
+            imageSrc: 'assets/enemigo/Run.png',
+            framesMax: 8
+            
+        },
+        jump: {
+            imageSrc: 'assets/enemigo/Jump.png',
+            framesMax: 2
+            
+        },
+        fall: {
+            imageSrc: 'assets/enemigo/Fall.png',
+            framesMax: 2
+        },
+        attack1: {
+            imageSrc: 'assets/enemigo/Attack1.png',
+            framesMax: 4
+        }
+    },
+    attackBox: {
+        offset:{
+            x: -100,
+            y:50,
+        },
+        width: 140,
+        height: 50
+    }   
 })
 
 
@@ -128,7 +176,7 @@ function animate() {
     shop.update()
 
     player.update()
-    //enemy.update()
+    enemy.update()
 
     player.velocity.x = 0
     enemy.velocity.x = 0
@@ -154,8 +202,18 @@ function animate() {
     //enemy MOVEMENT
     if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
         enemy.velocity.x = -5
+        enemy.switchSprite('run')
     } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
         enemy.velocity.x = 5
+        enemy.switchSprite('run')
+    }
+    else {
+        enemy.switchSprite('idle')
+    }
+    if (enemy.velocity.y < 0 ){
+        enemy.switchSprite('jump')
+    }else if(enemy.velocity.y > 0){
+        enemy.switchSprite('fall')
     }
 
     
@@ -165,21 +223,33 @@ function animate() {
         rectangle1: player,
         rectangle2: enemy
     }) &&
-        player.isAttacking) {
+        player.isAttacking && player.framesCurrent === 2) {
         player.isAttacking = false
         enemy.health -= 20
         document.querySelector('#enemyHealth').style.width = enemy.health + '%'
+    }
+
+    // IF PLAYER MISSES
+
+    if (player.isAttacking && player.framesCurrent === 2) {
+        player.isAttacking = false
     }
 
     if (ColisionRectangular({
         rectangle1: enemy,
         rectangle2: player
     }) &&
-        enemy.isAttacking) {
+        enemy.isAttacking && enemy.framesCurrent === 2) {
         enemy.isAttacking = false
         player.health -= 20
         document.querySelector('#playerHealth').style.width = player.health + '%'
         console.log('enemy hit')
+    }
+
+    // IF PLAYER MISSES
+
+    if (enemy.isAttacking && enemy.framesCurrent === 2) {
+        enemy.isAttacking = false
     }
 
     // TERMINAR EL JUEGO BASADO EN VIDA
