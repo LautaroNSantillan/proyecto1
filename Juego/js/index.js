@@ -40,6 +40,13 @@ const player = new Fighter({
     offset: {
         x: 0,
         y: 0
+    },
+    imageSrc: 'assets/jugador/Idle.png',
+    framesMax: 8,
+    scale: 2.5,
+    offset :{
+        x: 150,
+        y: 120
     }
 })
 
